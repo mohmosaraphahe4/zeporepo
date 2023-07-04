@@ -1,0 +1,34 @@
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+import time
+
+# Запустить веб-драйвер и открыть WhatsApp Web
+driver = webdriver.Chrome('путь_к_драйверу_вашего_браузера')
+driver.get('https://web.whatsapp.com/')
+time.sleep(15)  # Ожидание, чтобы вы могли отсканировать QR-код WhatsApp
+
+# Функция для отправки сообщения
+def send_message(contact_name, message):
+    # Найти поле ввода поиска и ввести имя контакта
+    search_field = driver.find_element_by_xpath('//div[@contenteditable="true"][@data-tab="3"]')
+    search_field.clear()
+    search_field.send_keys(contact_name)
+    time.sleep(2)  # Ожидание, чтобы появился контакт в списке
+
+    # Нажать на первый результат поиска (контакт)
+    contact = driver.find_element_by_xpath('//span[@title="' + contact_name + '"]')
+    contact.click()
+    time.sleep(2)  # Ожидание, чтобы открылся чат с контактом
+
+    # Найти поле ввода сообщения и отправить сообщение
+    message_field = driver.find_element_by_xpath('//div[@contenteditable="true"][@data-tab="1"]')
+    message_field.clear()
+    message_field.send_keys(message)
+    message_field.send_keys(Keys.RETURN)
+    time.sleep(2)  # Ожидание перед отправкой следующего сообщения
+
+# Пример использования
+send_message('Имя_контакта', 'Привет! Это автоматическое сообщение.')
+
+# Закрыть веб-драйвер
+driver.quit()
